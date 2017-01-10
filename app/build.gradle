@@ -1,0 +1,76 @@
+apply plugin: 'com.android.application'
+apply plugin: 'jacoco'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "com.example.testing.testingexample"
+        minSdkVersion 15
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile ('proguard-android.txt' ), 'proguard-rules.pro'
+        }
+        debug {
+            testCoverageEnabled true
+        }
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+    sourceSets {
+        androidTest {
+            java.srcDirs = ['src/com/helen/andbase/tests']
+        }
+    }
+    jacoco {
+        version "0.7.4.201502262128"
+    }
+    //jacocoTestReport依赖于connectedAndroidTest task，所以在执行jacoco之前需要先执行connectedAndroidTest，也就是说需要连接测试机（模拟器or真机）
+    task jacocoTestReport(type: JacocoReport, dependsOn: "connectedAndroidTest") {
+        group = "Reporting"
+        description = "Generate Jacoco coverage reports after running tests."
+        reports {
+            xml.enabled = false
+            html.enabled = true
+            csv.enabled = false
+        }
+        classDirectories = fileTree(
+                dir: "$buildDir/intermediates/classes/debug",
+                excludes: [
+                        '**/*Test.class',
+                        '**/R.class',
+                        '**/R$*.class',
+                        '**/BuildConfig.*',
+                        '**/Manifest*.*'
+                ]
+        )
+        def coverageSourceDirs = ['src/main/java']
+        additionalSourceDirs = files(coverageSourceDirs)
+        sourceDirectories = files(coverageSourceDirs)
+        additionalClassDirs = files(coverageSourceDirs)
+        executionData = files("$buildDir/outputs/code-coverage/connected/coverage.ec")
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile ('com.android.support:appcompat-v7:22.1.1'){
+        exclude group: 'com.android.support', module:'support-annotations'
+    }
+
+    testCompile 'junit:junit:4.12'
+
+    androidTestCompile 'com.android.support.test:runner:0.2'
+    androidTestCompile 'com.android.support.test:rules:0.2'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.1'
+
+}
