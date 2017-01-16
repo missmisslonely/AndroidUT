@@ -35,8 +35,8 @@ android {
     jacoco {
         version "0.7.4.201502262128"
     }
-    //jacocoTestReport依赖于connectedAndroidTest task，所以在执行jacoco之前需要先执行connectedAndroidTest，也就是说需要连接测试机（模拟器or真机）
-    task jacocoAndroidTestReport(type: JacocoReport, dependsOn: "connectedAndroidTest") {
+    //jacocoTestReport,需要打开真机
+    task jacocoTestReport(type: JacocoReport, dependsOn: ['test','connectedAndroidTest']) {
         group = "Reporting"
         description = "Generate Jacoco coverage reports after running tests."
         reports {
@@ -45,7 +45,7 @@ android {
             csv.enabled = false
         }
         classDirectories = fileTree(
-                dir: "$buildDir/intermediates/classes/androidTest",
+                dir: "$buildDir/intermediates/classes/debug",
                 excludes: [
                         '**/*Test.class',
                         '**/R.class',
@@ -58,34 +58,10 @@ android {
         additionalSourceDirs = files(coverageSourceDirs)
         sourceDirectories = files(coverageSourceDirs)
         additionalClassDirs = files(coverageSourceDirs)
-        executionData = files("$buildDir/outputs/android-code-coverage/connected/coverage.ec")
-    }
-    //jacocoTestReport依赖于test task，所以在执行jacoco之前需要先执行test
-    task jacocoTestReport(type:JacocoReport,dependsOn:['test']){
-        group = "Reporting"
-        description = "Generate Jacoco coverage reports after running tests."
-        reports{
-            xml.enabled = false
-            html.enabled = true
-            csv.enabled = false
-        }
-        classDirectories = fileTree(
-                dir : "$buildDir/intermediates/classes/debug",
-                excludes : [
-                        '**/*Test.class',
-                        '**/R.class',
-                        '**/R$*.class',
-                        '**/BuildConfig.*',
-                        '**/Manifest*.*'
-                ]
-        )
-        def coverageSourceDirs = ['src/main/java']
-        additionalSourceDirs = files(coverageSourceDirs)
-        sourceDirectories = files(coverageSourceDirs)
-        additionalClassDirs = files(coverageSourceDirs)
-        executionData = files('../app/build/jacoco/testDebugUnitTest.exec')
+        executionData = fileTree(dir: "$buildDir", includes: [
+                "jacoco/testDebugUnitTest.exec", "outputs/code-coverage/connected/*coverage.ec"
+    ])}
 
-    }
 }
 
 dependencies {
