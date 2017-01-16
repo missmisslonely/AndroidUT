@@ -1,4 +1,4 @@
-package com.example.testing.testingexample;
+package com.example.testing.testingexample.Instrumentation;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.testing.testingexample.R;
 
 
 public class MainActivity extends ActionBarActivity {

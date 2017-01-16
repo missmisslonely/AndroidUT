@@ -1,5 +1,7 @@
 package com.example.testing.testingexample;
 
+import com.example.testing.testingexample.logic.Calculator;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +20,7 @@ public class CalculatorTest {
     }
 
     @Test
-    public void testSum() throws Exception {
+    public void sum() throws Exception {
         //expected: 6, sum of 1 and 5
         assertEquals(6d, mCalculator.sum(1d, 5d), 0);
     }

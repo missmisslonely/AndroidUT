@@ -1,4 +1,4 @@
-package com.example.testing.testingexample;
+package com.example.testing.testingexample.logic;
 
 /**
  * Created by on 15/6/4.
